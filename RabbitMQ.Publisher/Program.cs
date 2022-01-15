@@ -17,18 +17,19 @@ namespace RabbitMQ.Publisher
 
             var channel = connection.CreateModel();
 
-            channel.QueueDeclare("Hello-Queue", true, false, false);
+            //channel.QueueDeclare("Hello-Queue", true, false, false);
+            channel.ExchangeDeclare("logs-fanout", durable: true, type: ExchangeType.Fanout);
 
             Enumerable.Range(1, 50).ToList().ForEach(x =>
              {
-                 var message = $"Message {x}";
+                 var message = $"Log {x}";
 
                  //Rabbit MQ ya mesajları byte dizin olarak atıyoruz
 
                  var messageBody = Encoding.UTF8.GetBytes(message);
 
                  //Default Exchange
-                 channel.BasicPublish(string.Empty, "Hello-Queue", null, messageBody);
+                 channel.BasicPublish("logs-fanout",string.Empty, null, messageBody);
 
                  Console.WriteLine($"Mesaj Gönderilmiştir : {message}");
              });
