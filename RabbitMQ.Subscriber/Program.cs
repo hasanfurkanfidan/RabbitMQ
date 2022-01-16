@@ -33,12 +33,13 @@ namespace RabbitMQ.Subscriber
             //    _channel.BasicAck(eventArgs.DeliveryTag, false);
             //};
 
-            var randomQueueName = "logs-database-save";
-            channel.QueueDeclare(randomQueueName, true, false, false);
-            channel.QueueBind(randomQueueName, "logs-fanout", string.Empty, null);
+            //var randomQueueName = "logs-database-save";
+            //channel.QueueDeclare(randomQueueName, true, false, false);
+            //channel.QueueBind(randomQueueName, "logs-fanout", string.Empty, null);
+            var queueName = "direct-queue-Critical";
             var consumer = new EventingBasicConsumer(channel);
             channel.BasicQos(0, 1, false);
-            channel.BasicConsume(randomQueueName, false, consumer);
+            channel.BasicConsume(queueName, false, consumer);
             consumer.Received += (object sender, BasicDeliverEventArgs e) =>
             {
                 var message = Encoding.UTF8.GetString(e.Body.ToArray());
